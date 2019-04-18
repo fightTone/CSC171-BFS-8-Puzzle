@@ -1,16 +1,51 @@
 import argparse
 import timeit
-# import resource
 from collections import deque
 from state import State
 from heapq import heappush, heappop, heapify
 import itertools
+import random
+
+
+def initial():
+    mov = ['up','down', 'left', 'right']
+    list = [0,1,2,3,4,5,6,7,8]
+    i = 0 
+    while(i<=21):
+        zero_loc = list.index(0)
+        res = random.choice(mov)
+        if res == 'up':
+            if zero_loc <= 2:
+                print( "no up")
+            else:
+                list[zero_loc], list[zero_loc-3] = list[zero_loc-3], list[zero_loc]
+        elif res == 'down':
+            if zero_loc >= 6:
+                print( "no down")
+            else:
+                list[zero_loc], list[zero_loc+3] = list[zero_loc+3], list[zero_loc]
+        elif res == 'left':
+            if (zero_loc == 0) or (zero_loc == 3) or (zero_loc == 6):
+                print( "no left")
+            else:
+                list[zero_loc], list[zero_loc-1] = list[zero_loc-1], list[zero_loc]
+        elif res == 'right':
+            if (zero_loc == 2) or (zero_loc == 5) or (zero_loc == 8):
+                print( "no right")
+            else:
+                list[zero_loc], list[zero_loc+1] = list[zero_loc+1], list[zero_loc]
+        
+        i+=1
+  
+    return list
+
 
 goal_state = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 goal_node = State
-initial_state = list()
-board_len = 0
-board_side = 0
+# initial_state = list()
+initial_state = initial()
+board_len = 9
+board_side = int(board_len ** 0.5)
 
 nodes_expanded = 0
 max_search_depth = 0
@@ -19,6 +54,24 @@ max_frontier_size = 0
 moves = list()
 costs = set()
 
+def init():
+    random.shuffle(initial_state)
+    if not solvable(initial_state):
+        init()
+
+def solvable(state):
+    invcnt = inv_cnt(state)
+    if invcnt % 2 == 0:
+        return True
+    return False
+
+def inv_cnt(state):
+    inv_count = 0; 
+    for i in range(0,8,1):
+        for j in range(i+1,9,1):
+            if state[j] and state[i] and state[i] > state[j]:
+                  inv_count = inv_count + 1
+    return inv_count
 
 def bfs(start_state):
 
@@ -48,6 +101,24 @@ def bfs(start_state):
 
         if len(queue) > max_frontier_size:
             max_frontier_size = len(queue)
+
+
+def ida(start_state):
+
+    global costs
+
+    threshold = h(start_state)
+
+    while 1:
+        response = dls_mod(start_state, threshold)
+
+        if type(response) is list:
+            return response
+            break
+
+        threshold = response
+
+        costs = set()
 
 
 def dls_mod(start_state, threshold):
@@ -169,91 +240,22 @@ def h(state):
 
 def backtrace():
 
+    moves = []
+
     current_node = goal_node
 
     while initial_state != current_node.state:
 
         if current_node.move == 1:
-            movement = 'Up'
+            movement = 'up'
         elif current_node.move == 2:
-            movement = 'Down'
+            movement = 'down'
         elif current_node.move == 3:
-            movement = 'Left'
+            movement = 'left'
         else:
-            movement = 'Right'
+            movement = 'right'
 
         moves.insert(0, movement)
         current_node = current_node.parent
 
     return moves
-
-
-def export(frontier, time):
-
-    global moves
-
-    moves = backtrace()
-    print ("path_to_goal: " + str(moves))
-    
-    file = open('output.txt', 'w')
-    # file.write("path_to_goal: " + str(moves))
-    file.write(str(moves))
-    # file.write("\nnodes_expanded: " + str(nodes_expanded))
-    # file.write("\nfringe_size: " + str(len(frontier)))
-    # file.write("\nmax_fringe_size: " + str(max_frontier_size))
-    # file.write("\nsearch_depth: " + str(goal_node.depth))
-    # file.write("\nmax_search_depth: " + str(max_search_depth))
-    # file.write("\nrunning_time: " + format(time, '.8f'))
-    
-    file.close()
-
-
-def read(configuration):
-
-    global board_len, board_side
-
-    data = configuration.split(",")
-
-    for element in data:
-        initial_state.append(int(element))
-
-    board_len = len(initial_state)
-
-    board_side = int(board_len ** 0.5)
-
-def initial():
-    # list = [0,1,2,3,4,5,6,7,8]
-    # i = 7 
-    # while(i<=7):
-        
-    #     i+=1
-    return '8,7,6,5,4,3,2,1,0'
-
-def main():
-
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('algorithm')
-    parser.add_argument('board')
-    args = parser.parse_args()
-
-    read(args.board)
-
-    function = function_map[args.algorithm]
-
-    start = timeit.default_timer()
-
-    frontier = function(initial_state)
-
-    stop = timeit.default_timer()
-
-    export(frontier, stop-start)
-
-
-function_map = {
-    'bfs': bfs,
-
-}
-
-if __name__ == "__main__":
-    main()

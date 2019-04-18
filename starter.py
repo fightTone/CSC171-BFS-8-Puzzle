@@ -1,18 +1,25 @@
 import os
 import numpy as np
-from driver import *
-from flask import Flask, render_template
+import driver as d
+from flask import Flask, render_template,redirect
+import random
 
 app =Flask(__name__)
 
+
+
 @app.route('/')
 def index():
-    inputs = initial()
-    os.system('python driver.py bfs '+inputs)
-    file = open('output.txt', 'r')
-    moves = np.array(file.read())
-    
-    return render_template("index.html",initial=inputs,moves=moves)
+    inputs = d.initial_state
+    init = str(d.initial_state).replace('[','').replace(']','')
+    d.bfs(inputs)
+    moves = d.backtrace()
+    return render_template("index.html",initial=init,moves=moves)
 
+
+@app.route('/shuffle', methods=['GET'])
+def shuffler():
+    d.initial_state = d.initial()
+    return redirect('/')
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=80,debug=True)
