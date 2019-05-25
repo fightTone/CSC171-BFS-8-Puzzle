@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 8-puzzle
 
 A.I - Implemented BFS, DFS, A* and IDA* to solve the n-puzzle problem. The script prints the results to output.txt
@@ -25,3 +26,7 @@ max_search_depth: 30
 running_time: 1.80822521
 max_ram_usage: 7.44400000
 ```
+=======
+# CSC171-BFS-8-Puzzle
+#run " starter.py "
+>>>>>>> fe7254d1d17aaa6367e80cbf21ecd99d247aba05
