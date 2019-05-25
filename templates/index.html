@@ -70,13 +70,25 @@
 
 </style>
 
-<body>
-    <h1>{{moves}}</h1>
-    <div style="text-align:center;" class="view-screen">
+<body class="view-screen">
+    
+    
+    
+    <div style="text-align:left;" class="view-screen">
+        <div style="background-color: black; padding: 2%;">
+            <h1 style="color: aqua; background-color: black;">BFS Run time: {{bfsRun}} seconds </h1>
+            <h1 style="color: aqua; background-color: black;">BFS Moves: {{moves}}</h1><br>
+            <h1 style="color: aqua; background-color: black;">AST Run time: {{astRun}} seconds </h1>
+            <h1 style="color: aqua; background-color: black;">AST Moves: {{movesAST}}</h1>
+
+        </div>
         <div class="eight-puzzle">
         </div>
-        <button onclick="window.location.href='/shuffle'" style="color:#00ff00">Shuffle</button>
+        <div style=' margin-left: 1%;'>
+            <button onclick="window.location.href='/shuffle'" style="color:#00ff00;width: 273px;    background-color: black;">Shuffle</button>
+        </div>
     </div>
+
    
 </body>
 
