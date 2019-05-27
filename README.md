@@ -7,9 +7,8 @@ A.I - Implemented BFS and  A*  to solve the n-puzzle problem. The script prints 
 ```
 bfs (Breadth-First Search)
 ast (A-Star Search)
-
+```
 ### Usage
 
-# CSC171-BFS-8-Puzzle
 #run " starter.py "
 
